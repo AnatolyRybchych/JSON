@@ -130,6 +130,25 @@ namespace JSON
         _content = ToString();
     }
 
+    int JSONObj::GetLengh()
+    {
+        return _content.size();
+    }
+
+    JSONObj JSONObj::operator[](std::wstring key)
+    {
+        for(auto obj:_inner)
+            if(obj._key.find(key) == 0) return obj;
+        return JSONObj(L"0",key);
+    }
+
+    JSONObj JSONObj::operator[](const wchar_t* key)
+    {
+                for(auto obj:_inner)
+            if(obj._key.find(key) == 0) return obj;
+        return JSONObj(L"0",key);
+    }
+
     std::wstring JSONObj::ToString()
     {
         std::wstring res = L"";
