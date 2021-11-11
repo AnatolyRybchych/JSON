@@ -129,27 +129,30 @@ namespace JSON
     std::wstring JSONObj::ToString()
     {
         std::wstring res = L"";
+        int counter = 0;
         if(IsObject())
         {
-            res+=L"\t{";
+            res+=L"{";
             for(auto in:_inner)
             {
+                if(counter++) res+= L',';
                 std::wstring innerStr;
                 for(auto ch:in.ToString())
                 {
                     innerStr+= ch;
-                    innerStr += ch==L'\t'?L"\t":L"";
+                    innerStr += ch==L'\n'?L"\t":L"";
                 }
-                res+= std::wstring(L"\n\t\"") + in.GetKey() + L"\":" + innerStr + L"";
+                res+= std::wstring(L"\n\"") + in.GetKey() + L"\":" + innerStr;
             }
-            res+=L"\n\t}";
+            res+=L"\n}";
         }
         else if(IsArray())
         {
             res+=L"[";
             for(auto in:_inner)
             {
-                res += std::wstring(L"\n\t") + in.GetString() + std::wstring(L",");
+                if(counter++) res+= L',';
+                res += std::wstring(L"\n\t") + in.GetString();
             }
             res += L"\n]";
 
@@ -167,12 +170,12 @@ namespace JSON
 
     bool JSONObj::WriteToFile(std::wstring path)
     {
-        FILE* file = _wfopen(path.c_str(),L"w");
-        if(file)
+        std::wofstream fs(path.c_str(),std::ios::out);
+        if(fs.is_open())
         {
             std::wstring out = ToString();
-            fwrite(out.c_str(),sizeof(wchar_t),out.size(),file);
-            fclose(file);
+            fs.write(out.c_str(),out.length());
+            fs.close();
             return true;
         }
         else
