@@ -35,6 +35,7 @@ namespace JSON
         void AddString(std::wstring key,std::wstring value);
         void AddObject(JSONObj obj);
         void AddBool(std::wstring key,bool value);
+        void CommitContentChanges();
         std::wstring ToString();
         bool WriteToFile(std::wstring path);
         JSONObj operator[](int index);

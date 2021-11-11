@@ -125,6 +125,10 @@ namespace JSON
             _inner.push_back(JSONObj(std::to_wstring(value),key));
         }
     }
+    void JSONObj::CommitContentChanges()
+    {
+        _content = ToString();
+    }
 
     std::wstring JSONObj::ToString()
     {
