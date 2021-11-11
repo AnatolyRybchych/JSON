@@ -69,7 +69,7 @@ namespace JSON
         {
             index--;
             return true;
-        };
+        };  
 
         for(auto str:GetStringBlocks(json,findObjectPairStart,findObjectPairEnd))
         {
