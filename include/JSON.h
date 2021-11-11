@@ -1,24 +1,16 @@
-#include<string>
-#include<vector>
-#include<functional>
-#include<exception>
-#include<assert.h>
+#ifndef JSON_H
+#define JSON_H
+
+
+
 #include<memory>
 #include<algorithm>
 
+#include"JSONValueType.h"
+#include"implementations.h"
+
 namespace JSON
 {
-    enum JSONValueType
-    {
-        ValueInt = 0x0100,
-        ValueString = 0x1000,
-        ValueBool = 0x1100,
-
-        Array = 0x0001,
-        Object = 0x0010,
-        None = 0x0000
-    };
-
     class JSONObj
     {
     public:
@@ -35,7 +27,11 @@ namespace JSON
 
         //json - minimized json string
         static JSONValueType GetType(std::wstring json);
+        //json - minimized json string
         static std::vector<JSONObj> GetArray(std::wstring json);
+        //json - minimized json string
         static std::vector<JSONObj> GetInnerObjectPairs(std::wstring json);
     };
 }
+
+#endif

@@ -1,93 +1,6 @@
 #include"../include/JSON.h"
+
 #include<iostream>
-
-#define LOWER_STR(a) std::wstring(_wcslwr(const_cast<wchar_t*>(a.c_str())))
-
-std::wstring MinimizeJsonStr(std::wstring json)
-{
-    std::wstring res;
-    bool isInnerStr = false;
-    wchar_t prev;
-    for(auto ch:json) 
-    {
-        if(!isInnerStr && ch == L'\"') isInnerStr = true;
-        else if(isInnerStr && ch ==L'\"' && prev != L'\\') isInnerStr = false;
-        if((ch != L' ' && ch != L'\n' && ch != L'\t') || isInnerStr)
-            res.push_back(ch);
-        prev = ch;
-    }
-    return res;
-}
-
-//findStartBlockHandler procs for each char before it returns true and after findEndBlockHandler == true
-//findEndBlockHandler procs for each other characters
-//if any handler returns true or index out of copying block, than charackter ignores
-std::vector<std::wstring> GetStringBlocks(
-    std::wstring string,
-    std::function<bool(int& index, std::wstring* str)> findStartBlockHandler,
-    std::function<bool(int& index, std::wstring* str)> findEndBlockHandler)
-{
-    std::vector<std::wstring> res;
-    std::wstring curr;
-    bool writing = false;
-    for (int i = 0; i < string.length(); i++)
-    {
-        if(!writing && findStartBlockHandler(i,&string))//serchig start of block
-        {
-            writing = true;
-            continue;
-        }
-        if(writing && findEndBlockHandler(i,&string))//searching end of block
-        {
-            writing = false;
-            res.push_back(curr);
-            curr.clear();
-            continue;
-        }
-        if(writing)
-        {
-            curr.push_back(string[i]);
-        }
-    }
-    return res;
-}
-
-//json - minimized string "[data]"
-std::vector<std::wstring> GetStrArrays(std::wstring json)
-{
-    if(json.size() < 3)         return std::vector<std::wstring>();
-    else if(json[0] != L'[')    return std::vector<std::wstring>();
-
-    if(json[1] == L'\"')
-    {
-        return GetStringBlocks(json, 
-            [&](int& index,std::wstring* string)->bool
-                {return string->at(index) == L'\"';},
-            [&](int& index,std::wstring* string) -> bool
-                {return string->at(index) == L'\"' && string->at(index) != L'\\';}
-        );
-    }
-    else if(json[1] == L'[')
-    {
-        return GetStringBlocks(json, 
-            [&](int& index,std::wstring* string)->bool
-                {return string->at(index) == L'[' || string->at(index) == L'[';},
-            [&](int& index,std::wstring* string) -> bool
-                {return string->at(index) == L']';}
-        );
-    }
-    else
-    {
-        return GetStringBlocks(json, 
-            [&](int& index,std::wstring* string)->bool
-                {return string->at(index) == L',';},
-            [&](int& index,std::wstring* string) -> bool
-                {return string->at(index) == L',';}
-        );
-    }
-    
-
-}
 
 namespace JSON
 {
@@ -95,7 +8,6 @@ namespace JSON
     {
         _content = MinimizeJsonStr(content);
         _key = key;
-        std::wcout<<content<<"\n";
         _type = GetType(_content);
         Init();
 
@@ -150,7 +62,6 @@ namespace JSON
             else if(string->at(index) == L'}') complexity--;
 
             if(complexity == 1 && isInStr == false && (string->at(index) == L',')) return true;
-            else if(complexity == 0) return true;
             else return false;
         };
 
@@ -170,6 +81,7 @@ namespace JSON
                 if(str[i] != L'\"') key.push_back(str[i]);
                 i++;
             }
+            std::wcout<<str<<"\n";
             res.push_back(JSONObj(str.substr(i+1),key));
         }
         return res;
