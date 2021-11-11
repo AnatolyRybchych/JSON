@@ -1,7 +1,5 @@
 #include"../include/JSON.h"
 
-#include<iostream>
-
 namespace JSON
 {
     JSONObj::JSONObj(std::wstring content, std::wstring key)
@@ -10,7 +8,230 @@ namespace JSON
         _key = key;
         _type = GetType(_content);
         Init();
+    }
 
+    bool JSONObj::IsArray()
+    {
+        return _type == JSONValueType::Array;
+    }
+
+    bool JSONObj::IsObject()
+    {
+        return _type == JSONValueType::Object;
+    }
+
+    bool JSONObj::IsNumber()
+    {
+        return _type == JSONValueType::ValueNumber;
+    }
+
+    bool JSONObj::IsBool()
+    {
+        return _type == JSONValueType::ValueBool;
+    }
+
+    bool JSONObj::IsString()
+    {
+        return _type == JSONValueType::ValueString;
+    }
+
+    std::vector<JSONObj> JSONObj::GetInnerObjects()
+    {
+        return _inner;
+    }
+
+    std::wstring JSONObj::GetKey()
+    {
+        return _key;
+    }
+
+    std::wstring JSONObj::GetJsonContent()
+    {
+        return _content;
+    }
+
+    std::wstring JSONObj::GetString()
+    {
+        if(!_content.size() > 2 && _content[0] == L'\"')
+        {
+            return _content.substr(1,_content.size()-1);
+        }
+        return _content;
+    }
+
+    int JSONObj::GetInt()
+    {
+        if(IsNumber() == false)
+        {
+            return 0;
+        }
+        else 
+        {
+            return std::stoi(GetString());
+        }
+    }
+
+    bool JSONObj::GetBool()
+    {
+        return LOWER_STR(MinimizeJsonStr(GetString())).find(L"true") != -1;
+    }
+
+    bool JSONObj::CanAdd()
+    {
+        return IsObject() || IsArray();
+    }
+
+    void JSONObj::AddInt(std::wstring key,int value)
+    {
+        if(CanAdd())
+        {
+            _inner.push_back(JSONObj(std::to_wstring(value),key));
+        }
+    }
+
+    void JSONObj::AddDouble(std::wstring key,double value)
+    {
+        if(CanAdd())
+        {
+            _inner.push_back(JSONObj(std::to_wstring(value),key));
+        }
+    }
+
+    void JSONObj::AddFloat(std::wstring key,float value)
+    {
+        if(CanAdd())
+        {
+            _inner.push_back(JSONObj(std::to_wstring(value),key));
+        }
+    }
+
+    void JSONObj::AddString(std::wstring key,std::wstring value)
+    {
+        if(CanAdd())
+        {
+            _inner.push_back(JSONObj(L"\""+value+L"\"",key));
+        }
+    }
+
+    void JSONObj::AddObject(JSONObj obj)
+    {
+        _inner.push_back(obj);
+    }
+
+    void JSONObj::AddBool(std::wstring key,bool value)
+    {
+        if(CanAdd())
+        {
+            _inner.push_back(JSONObj(std::to_wstring(value),key));
+        }
+    }
+
+    std::wstring JSONObj::ToString()
+    {
+        std::wstring res = L"";
+        if(IsObject())
+        {
+            res+=L"\t{";
+            for(auto in:_inner)
+            {
+                std::wstring innerStr;
+                for(auto ch:in.ToString())
+                {
+                    innerStr+= ch;
+                    innerStr += ch==L'\t'?L"\t":L"";
+                }
+                res+= std::wstring(L"\n\t\"") + in.GetKey() + L"\":" + innerStr + L"";
+            }
+            res+=L"\n\t}";
+        }
+        else if(IsArray())
+        {
+            res+=L"[";
+            for(auto in:_inner)
+            {
+                res += std::wstring(L"\n\t") + in.GetString() + std::wstring(L",");
+            }
+            res += L"\n]";
+
+        }
+        else if(IsString())
+        {
+            res += GetString();
+        }
+        else
+        {
+            res += GetString();
+        }
+        return res;
+    }
+
+    bool JSONObj::WriteToFile(std::wstring path)
+    {
+        FILE* file = _wfopen(path.c_str(),L"w");
+        if(file)
+        {
+            std::wstring out = ToString();
+            fwrite(out.c_str(),sizeof(wchar_t),out.size(),file);
+            fclose(file);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        
+    }
+
+    double JSONObj::GetDouble()
+    {
+        if(IsNumber())
+        {
+            std::wstring str = GetString();
+            std::replace(str.begin(),str.end(),L',',L'.');
+            return std::stod(GetString());
+        }
+        else return 0;
+    }
+
+    float JSONObj::GetFloat()
+    {
+        if(IsNumber())
+        {
+            std::wstring str = GetString();
+            std::replace(str.begin(),str.end(),L',',L'.');
+            return std::stof(str);
+        }
+        else return 0;
+    }
+
+    JSONObj JSONObj::operator[](int index)
+    {
+        return _inner[index];
+    }
+
+    JSONObj::operator int()
+    {
+        return GetInt();
+    }
+
+    JSONObj::operator double()
+    {
+        return GetDouble();
+    }
+
+    JSONObj::operator float()
+    {
+        return GetFloat();
+    }
+
+    JSONObj::operator bool()
+    {
+        return GetBool();
+    }
+
+    JSONObj::operator std::wstring()
+    {
+        return GetString();
     }
 
     void JSONObj::Init()
@@ -39,16 +260,15 @@ namespace JSON
         std::vector<JSONObj> res;
 
         for(auto str:GetStringBlocks(json,_find_object_pair_start,_find_object_pair_end))
-        {
+        { 
             int i = 0;
             std::wstring key;
             while(i < str.length())
             {
                 if(str[i] == L':') break;
-                if(str[i] != L'\"') key.push_back(str[i]);
+                if(str[i] != L'\"') key+=str[i];
                 i++;
             }
-            std::wcout<<str<<"\n";
             res.push_back(JSONObj(str.substr(i+1),key));
         }
         return res;
@@ -69,7 +289,7 @@ namespace JSON
             return JSONValueType::ValueString;
         default:
             if(iswdigit(json[0])) 
-                return JSONValueType::ValueInt;
+                return JSONValueType::ValueNumber;
             else
                 return JSONValueType::ValueBool;
         }

@@ -2,7 +2,7 @@
 CC = g++
 out = ./static/JSON.o
 additionalLibs = 
-linkArgs = -shared
+linkArgs = -shared 
 compileArgs = -c 
 OBJDIR = ./objects/
 SRC_TYPE= '\.cpp'

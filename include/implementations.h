@@ -22,7 +22,7 @@ std::vector<std::wstring> GetStringBlocks(
 std::vector<std::wstring> GetStrArrays(std::wstring json);
 
 
-bool _find_object_pair_end(int index, std::wstring* string);
-bool _find_object_pair_start(int index, std::wstring* string);
+bool _find_object_pair_end(int& index, std::wstring* string);
+bool _find_object_pair_start(int& index, std::wstring* string);
 
-#endif
+#endif 

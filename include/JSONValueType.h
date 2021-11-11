@@ -5,13 +5,13 @@ namespace JSON
 {
     enum JSONValueType
     {
-        ValueInt = 0x0100,
-        ValueString = 0x1000,
-        ValueBool = 0x1100,
+        ValueNumber,
+        ValueString,
+        ValueBool,
 
-        Array = 0x0001,
-        Object = 0x0010,
-        None = 0x0000
+        Array,
+        Object,
+        None
     };
 }
 #endif

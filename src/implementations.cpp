@@ -1,6 +1,5 @@
 #include "../include/implementations.h"
 
-
 std::wstring MinimizeJsonStr(std::wstring json)
 {
     std::wstring res;
@@ -10,8 +9,8 @@ std::wstring MinimizeJsonStr(std::wstring json)
     {
         if(!isInnerStr && ch == L'\"') isInnerStr = true;
         else if(isInnerStr && ch ==L'\"' && prev != L'\\') isInnerStr = false;
-        if((ch != L' ' && ch != L'\n' && ch != L'\t') || isInnerStr)
-            res.push_back(ch);
+        if((ch != L' ' && (ch & ~(wchar_t)31) && ch != L'\n' && ch != L'\t') || isInnerStr)
+            res+= ch;
         prev = ch;
     }
     return res;
@@ -24,10 +23,11 @@ std::vector<std::wstring> GetStringBlocks(
 {
     std::vector<std::wstring> res;
     std::wstring curr;
+
     bool writing = false;
     for (int i = 0; i < string.length(); i++)
     {
-        if(!writing && findStartBlockHandler(i,&string))//serchig start of block
+        if(!writing && findStartBlockHandler(i,&string))//serching start of block
         {
             writing = true;
             continue;
@@ -41,7 +41,7 @@ std::vector<std::wstring> GetStringBlocks(
         }
         if(writing)
         {
-            curr.push_back(string[i]);
+            curr+=string[i];
         }
     }
     return res;
@@ -82,33 +82,41 @@ std::vector<std::wstring> GetStrArrays(std::wstring json)
     }
 }
 
-bool _find_object_pair_end(int index, std::wstring* string)
+bool _find_object_pair_end(int& index, std::wstring* string)
 {
-    static int complexity = 0;
-    bool isInStr = false;
-    if(string->at(index) == L'\"')
+    static int complexity = 1;
+    static bool isInStr = false;
+
+    if(index == 1)
     {
+        isInStr = false;
+        complexity = 1;
+    } 
+
+    switch (string->at(index))
+    {
+    case L'\"':
         if(isInStr)
         {
-            isInStr = true;
+            isInStr = false;
+            if(index > 0 && string->at(index-1) == L'\\') isInStr = true;
         }
-        else
-        {
-            if(string->at(index-1) == L'\\') 
-            {
-                isInStr = false;
-                if(index > 0)if(string->at(index-1) == L'\\') isInStr = true;
-            }
-        }
+        break;
+    case L'{':
+        complexity ++;
+        break;
+    case L'}':
+        complexity--;
+        break;
     }
-    else if(string->at(index) == L'{') complexity ++;
-    else if(string->at(index) == L'}') complexity--;
+
     if(complexity == 1 && isInStr == false && (string->at(index) == L',')) return true;
+    if(complexity == 0) return true;
     else return false;
 }
 
-bool _find_object_pair_start(int index, std::wstring* string)
+bool _find_object_pair_start(int& index, std::wstring* string)
 {
-    index--;
-    return true;
+    if(index!=0)index--; 
+    return true; 
 }
