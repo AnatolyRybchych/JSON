@@ -80,6 +80,35 @@ std::vector<std::wstring> GetStrArrays(std::wstring json)
                 {return string->at(index) == L',';}
         );
     }
-    
+}
 
+bool _find_object_pair_end(int index, std::wstring* string)
+{
+    static int complexity = 0;
+    bool isInStr = false;
+    if(string->at(index) == L'\"')
+    {
+        if(isInStr)
+        {
+            isInStr = true;
+        }
+        else
+        {
+            if(string->at(index-1) == L'\\') 
+            {
+                isInStr = false;
+                if(index > 0)if(string->at(index-1) == L'\\') isInStr = true;
+            }
+        }
+    }
+    else if(string->at(index) == L'{') complexity ++;
+    else if(string->at(index) == L'}') complexity--;
+    if(complexity == 1 && isInStr == false && (string->at(index) == L',')) return true;
+    else return false;
+}
+
+bool _find_object_pair_start(int index, std::wstring* string)
+{
+    index--;
+    return true;
 }
