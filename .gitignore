@@ -1,0 +1,6 @@
+#files for debug run
+/static/*.exe
+/static/*.json
+/MakeRun.mk
+/main.cpp
+/.vscode/*
