@@ -52,10 +52,58 @@ namespace JSON
 
     std::wstring JSONObj::GetString()
     {
-        if(!_content.size() > 2 && _content[0] == L'\"')
+        if(_content.size() > 2 && _content[0] == L'\"')
         {
-            return _content.substr(1,_content.size()-1);
+            std::wstring res;
+            bool escape = false;
+            for(auto ch:_content.substr(1,_content.size()-2))
+            {
+                if(!escape && ch == L'\\') 
+                {
+                    escape = true;
+                    continue;
+                }
+                if(escape)
+                {
+                    escape = false;
+                    switch(ch)
+                    {
+                    case L'\\':
+                        res += L'\\';
+                        break;
+                    case L'b':
+                        res += L'\b';
+                        break;
+                    case L'f':
+                        res += L'\f';
+                        break;
+                    case L'n':
+                        res += L'\n';
+                        break;
+                    case L'r':
+                        res += L'\r';
+                        break;
+                    case L't':
+                        res += L'\t';
+                        break;
+                    case L'\"':
+                        res += L'\"';
+                        break;
+                    default:
+                        res += L'\\';
+                        res += ch;
+                    }
+                }
+                else
+                {
+                    res += ch;
+                }
+                
+            }
+            return res;
         }
+
+
         return _content;
     }
 
