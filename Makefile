@@ -24,7 +24,7 @@ objects = $(patsubst %,$(OBJDIR)%,$(srcFiles:.cpp=.o))
 #link all objects together
 build: $(objects) 
 	@mkdir -p $(dir $(out))
-	$(CC) $(linkArgs) -o $(out) $+ $(additionalLibs) -g --enable-tui
+	$(CC) $(linkArgs) -o $(out) $+ $(additionalLibs) -g
 
 
 #compile all objects
