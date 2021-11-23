@@ -20,8 +20,6 @@
     (Type)JSONObj/
     JSONObj.Get##Type       -> if Is##Type returns content as Type type
                                 else     returns {number -> 0, bool -> false}
-    
-    Add[Type]
 
     GetInnerObjects         -> returns std::vector of child objects , empty vector is number/bool/string
     GetKey                  -> returns key of current node
