@@ -41,16 +41,16 @@ JSON::JSONObj -> json parser/editor class
 //file.json
 
 {
-"key1":"val1",
-"key2":1,
-"key3":{
-	"key3_1":"val3",
-	"key3_2":"val4"
-	},
-"key4":false,
-"key5":[1,2,3],
-"key6":[true,false],
-"key7":["val","val","val2"]
+    "key1":"val1",
+    "key2":1,
+    "key3":{
+        "key3_1":"val3",
+        "key3_2":"val4"
+        },
+    "key4":false,
+    "key5":[1,2,3],
+    "key6":[true,false],
+    "key7":["val","val","val2"]
 }
 
 //main.cpp
@@ -83,19 +83,19 @@ int main(int argc, char* atgv[])
 //file.json
 
 {
-"key1":"val1",
-"key2":1,
-"key3":{
-	"key3_1":"val3",
-	"key3_2":"val4"
-	},
-"key4":false,
-"key5":[1,2,3],
-"key6":[true,false],
-"key7":["val","val","val2"],
-"key8":{
-    "key8_1":1
-},
-"key9":2.5
+    "key1":"val1",
+    "key2":1,
+    "key3":{
+        "key3_1":"val3",
+        "key3_2":"val4"
+        },
+    "key4":false,
+    "key5":[1,2,3],
+    "key6":[true,false],
+    "key7":["val","val","val2"],
+    "key8":{
+        "key8_1":1
+    },
+    "key9":2.5
 }
 
