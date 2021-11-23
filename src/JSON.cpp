@@ -177,6 +177,11 @@ namespace JSON
     void JSONObj::CommitContentChanges()
     {
         _content = ToString();
+        if(_type == JSONValueType::Array || _type == JSONValueType::Object)
+        {
+            for(auto child:_inner)
+                child.CommitContentChanges();
+        }
     }
 
     int JSONObj::GetLengh()
