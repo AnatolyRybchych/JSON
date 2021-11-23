@@ -2,7 +2,7 @@
 
 ::JSON namespace -> lib namespace
 
-JSON::JSONObj -> json parser/editor class
+    JSON::JSONObj -> json parser/editor class
     JSON::JSONObj(wstring data, wstring key = L"__root__")
 
     JSONObj["key"]          -> returns child element in first order with equal name
@@ -40,7 +40,7 @@ JSON::JSONObj -> json parser/editor class
 
 #file.json
 
-{
+    {
     "key1":"val1",
     "key2":1,
     "key3":{
@@ -51,12 +51,12 @@ JSON::JSONObj -> json parser/editor class
     "key5":[1,2,3],
     "key6":[true,false],
     "key7":["val","val","val2"]
-}
+    }
 
 #main.cpp
 
-int main(int argc, char* atgv[])
-{
+    int main(int argc, char* atgv[])
+    {
     std::wstring sval;
     int ival;
     bool bval;
@@ -78,11 +78,11 @@ int main(int argc, char* atgv[])
     obj.WriteToFile(L"file.json");
 
     return 0;
-}
+    }
 
 #file.json
 
-{
+    {
     "key1":"val1",
     "key2":1,
     "key3":{
@@ -97,5 +97,5 @@ int main(int argc, char* atgv[])
         "key8_1":1
     },
     "key9":2.5
-}
+    }
 
