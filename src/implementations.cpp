@@ -1,4 +1,5 @@
 #include "../include/implementations.h"
+#include<iostream>
 
 std::wstring MinimizeJsonStr(std::wstring json)
 {
@@ -73,11 +74,19 @@ std::vector<std::wstring> GetStrArrays(std::wstring json)
     }
     else
     {
+        static bool first = true;
         return GetStringBlocks(json, 
             [&](int& index,std::wstring* string)->bool
-                {return string->at(index) == L',';},
+                {
+                    if(string->at(index) == L',' || string->at(index) == L']')
+                    {
+                        index-= 2;
+                        return true;
+                    }
+                    else return false;
+                },
             [&](int& index,std::wstring* string) -> bool
-                {return string->at(index) == L',';}
+                {return string->at(index) == L','|| string->at(index) == L']';}
         );
     }
 }
@@ -102,9 +111,11 @@ bool _find_object_pair_end(int& index, std::wstring* string)
             if(index > 0 && string->at(index-1) == L'\\') isInStr = true;
         }
         break;
+    case L'[':
     case L'{':
         complexity ++;
         break;
+    case L']':
     case L'}':
         complexity--;
         break;

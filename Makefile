@@ -3,7 +3,7 @@ CC = g++
 out = ./static/JSON.o
 additionalLibs = 
 linkArgs = -shared 
-compileArgs = -c 
+compileArgs = -c -g
 OBJDIR = ./objects/
 SRC_TYPE= '\.cpp'
 
@@ -24,7 +24,7 @@ objects = $(patsubst %,$(OBJDIR)%,$(srcFiles:.cpp=.o))
 #link all objects together
 build: $(objects) 
 	@mkdir -p $(dir $(out))
-	$(CC) $(linkArgs) -o $(out) $+ $(additionalLibs)
+	$(CC) $(linkArgs) -o $(out) $+ $(additionalLibs) -g --enable-tui
 
 
 #compile all objects
