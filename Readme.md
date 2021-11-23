@@ -1,5 +1,4 @@
-#JSON
-
+//JSON
 ::JSON namespace -> lib namespace
 
 JSON::JSONObj -> json parser/editor class
@@ -53,7 +52,6 @@ JSON::JSONObj -> json parser/editor class
 }
 
 //main.cpp
-
 int main(int argc, char* atgv[])
 {
     std::wstring sval;
@@ -80,8 +78,6 @@ int main(int argc, char* atgv[])
 }
 
 //file.json
-
-file.json
 {
 "key1":"val1",
 "key2":1,
