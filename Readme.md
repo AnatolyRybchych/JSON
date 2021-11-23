@@ -1,5 +1,3 @@
-#JSON
-
 ::JSON namespace -> lib namespace
 
     JSON::JSONObj -> json parser/editor class
@@ -36,7 +34,7 @@
                                 
                                 EXAMPLES
 
-#file.json
+file.json
 
     {
     "key1":"val1",
@@ -51,7 +49,7 @@
     "key7":["val","val","val2"]
     }
 
-#main.cpp
+main.cpp
 
     int main(int argc, char* atgv[])
     {
@@ -78,7 +76,7 @@
     return 0;
     }
 
-#file.json
+file.json
 
     {
     "key1":"val1",
